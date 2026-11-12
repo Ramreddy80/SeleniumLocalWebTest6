@@ -12,11 +12,11 @@ FROM debian:bookworm-slim AS runner
 # Copy Eclipse Temurin JDK 17 and Maven 3.9.9 from stage 1
 COPY --from=dependencies /opt/java/openjdk /opt/java/openjdk
 COPY --from=dependencies /usr/share/maven /usr/share/maven
-COPY --from=dependencies /usr/local/bin/mvn /usr/local/bin/mvn
 
-# Set Java environment variables
+# Set Java and Maven environment variables
 ENV JAVA_HOME=/opt/java/openjdk
-ENV PATH=$JAVA_HOME/bin:$PATH
+ENV MAVEN_HOME=/usr/share/maven
+ENV PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$PATH
 
 # Install native Chromium and Chromium Driver from Debian repository
 RUN apt-get update && apt-get install -y --no-install-recommends \
