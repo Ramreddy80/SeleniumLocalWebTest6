@@ -1,4 +1,4 @@
-# Stage 1: Dependency resolution and caching
+# Stage 1: Dependency resolution and caching with Maven 3.9.9
 FROM maven:3.9.9-eclipse-temurin-17 AS dependencies
 WORKDIR /app
 COPY pom.xml testng.xml ./
@@ -6,10 +6,14 @@ COPY webpage/ ./webpage/
 COPY src/ ./src/
 RUN mvn test-compile -DskipTests=true
 
-# Stage 2: Runtime environment with Chromium and ChromeDriver
-FROM maven:3.9.9-eclipse-temurin-17 AS runner
+# Stage 2: Runtime environment with Debian native Chromium & ChromeDriver
+FROM eclipse-temurin:17-jdk-bookworm AS runner
 
-# Install Chromium, Chromium Driver, and required dependencies
+# Copy Maven 3.9.9 installation from stage 1
+COPY --from=dependencies /usr/share/maven /usr/share/maven
+COPY --from=dependencies /usr/local/bin/mvn /usr/local/bin/mvn
+
+# Install native Chromium and Chromium Driver from Debian repository
 RUN apt-get update && apt-get install -y --no-install-recommends \
     chromium \
     chromium-driver \
@@ -18,9 +22,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-liberation \
     procps \
     && rm -rf /var/lib/apt/lists/*
-
-# Pre-generate font cache and pre-warm Chromium headless
-RUN fc-cache -f && chromium --headless=new --no-sandbox --disable-gpu --dump-dom about:blank > /dev/null 2>&1 || true
 
 # Configure environment variables
 ENV CHROME_BIN=/usr/bin/chromium

@@ -50,20 +50,7 @@ public class LocalLoginTest {
             }
         }
 
-        for (int attempt = 1; attempt <= 3; attempt++) {
-            try {
-                driver = new ChromeDriver(options);
-                break;
-            } catch (Exception ex) {
-                if (attempt == 3) {
-                    throw ex;
-                }
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException ignored) {}
-            }
-        }
-
+        driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         File htmlFile = new File("webpage/login.html");
