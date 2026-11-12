@@ -57,7 +57,7 @@ jobs:
 
       - name: Execute Docker container and verify tests
         run: |
-          docker run --rm ramreddy80/selenium-testng-automation6:local-test
+          docker run --rm --shm-size=2g ramreddy80/selenium-testng-automation6:local-test
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3

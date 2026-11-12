@@ -7,10 +7,12 @@ RUN mvn dependency:go-offline -B
 # Stage 2: Runtime environment with Chromium and ChromeDriver
 FROM maven:3.9.9-eclipse-temurin-17 AS runner
 
-# Install Chromium and Chromium Driver from Debian repository
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install Chromium, Chromium Driver, and required dependencies
+RUN apt-get update && apt-get install -y \
     chromium \
     chromium-driver \
+    ca-certificates \
+    procps \
     && rm -rf /var/lib/apt/lists/*
 
 # Configure environment variables

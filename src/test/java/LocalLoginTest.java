@@ -25,6 +25,8 @@ public class LocalLoginTest {
         options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--remote-allow-origins=*");
         options.addArguments("--window-size=1920,1080");
 
         String chromeBin = System.getenv("CHROME_BIN");
@@ -48,7 +50,23 @@ public class LocalLoginTest {
             }
         }
 
-        driver = new ChromeDriver(options);
+        Exception lastException = null;
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            try {
+                driver = new ChromeDriver(options);
+                break;
+            } catch (Exception ex) {
+                lastException = ex;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {}
+            }
+        }
+
+        if (driver == null && lastException != null) {
+            throw new RuntimeException("Failed to initialize ChromeDriver after 3 attempts", lastException);
+        }
+
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         File htmlFile = new File("webpage/login.html");
@@ -104,6 +122,7 @@ public class LocalLoginTest {
     public void tearDown() {
         if (driver != null) {
             driver.quit();
+            driver = null;
         }
     }
 }
