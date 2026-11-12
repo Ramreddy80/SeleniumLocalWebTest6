@@ -1,4 +1,4 @@
-# Stage 1: Dependency resolution and caching with Maven 3.9.9
+# Stage 1: Dependency resolution and caching with Maven 3.9.9 and Eclipse Temurin JDK 17
 FROM maven:3.9.9-eclipse-temurin-17 AS dependencies
 WORKDIR /app
 COPY pom.xml testng.xml ./
@@ -7,11 +7,16 @@ COPY src/ ./src/
 RUN mvn test-compile -DskipTests=true
 
 # Stage 2: Runtime environment with Debian native Chromium & ChromeDriver
-FROM eclipse-temurin:17-jdk-bookworm AS runner
+FROM debian:bookworm-slim AS runner
 
-# Copy Maven 3.9.9 installation from stage 1
+# Copy Eclipse Temurin JDK 17 and Maven 3.9.9 from stage 1
+COPY --from=dependencies /opt/java/openjdk /opt/java/openjdk
 COPY --from=dependencies /usr/share/maven /usr/share/maven
 COPY --from=dependencies /usr/local/bin/mvn /usr/local/bin/mvn
+
+# Set Java environment variables
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Install native Chromium and Chromium Driver from Debian repository
 RUN apt-get update && apt-get install -y --no-install-recommends \
