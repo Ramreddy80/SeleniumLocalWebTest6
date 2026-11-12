@@ -50,21 +50,18 @@ public class LocalLoginTest {
             }
         }
 
-        Exception lastException = null;
         for (int attempt = 1; attempt <= 3; attempt++) {
             try {
                 driver = new ChromeDriver(options);
                 break;
             } catch (Exception ex) {
-                lastException = ex;
+                if (attempt == 3) {
+                    throw ex;
+                }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1500);
                 } catch (InterruptedException ignored) {}
             }
-        }
-
-        if (driver == null && lastException != null) {
-            throw new RuntimeException("Failed to initialize ChromeDriver after 3 attempts", lastException);
         }
 
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
