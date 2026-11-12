@@ -1,0 +1,13 @@
+target/
+.git/
+.github/
+.maven/
+maven/
+.idea/
+.settings/
+.project
+.classpath
+*.iml
+*.log
+.DS_Store
+Thumbs.db

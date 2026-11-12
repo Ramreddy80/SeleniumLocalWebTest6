@@ -1,0 +1,39 @@
+# Maven target directory
+target/
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+.maven/
+maven/
+mvn.cmd
+mvn.ps1
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.built-jar-path
+
+# OS temporary files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Logs and secrets
+*.log
+.env
